@@ -97,6 +97,11 @@ public class DataInitializer {
             socialProfileRepository.save(profile1);
             socialProfileRepository.save(profile2);
             socialProfileRepository.save(profile3);
+
+            // FETCH TYPES
+
+            System.out.println("FETHCING SOCIAL USER");
+            userRepository.findById(1L);
         };
     }
 }

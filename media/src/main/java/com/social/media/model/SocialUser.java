@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -19,18 +16,34 @@ public class SocialUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne(mappedBy = "user")
-    private SocialProfile profile;
 
-    @OneToMany(mappedBy = "socialUser")
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private SocialProfile socialProfile;
+
+
+    @OneToMany(mappedBy = "socialUser", cascade = CascadeType.ALL)
     private List<Post> posts = new ArrayList<>();
 
-    @ManyToMany
-    @JoinTable(
+
+//    @ManyToMany(fetch = FetchType.EAGER)
+@ManyToMany(fetch = FetchType.LAZY)
+@JoinTable(
             name = "user_group",
             joinColumns =  @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "group_id")
     )
     private Set<SocialGroup> groups = new HashSet<>();
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+
+    // Custom Setter for settign user in userporfile as well
+
+    public void setSocialProfile(SocialProfile socialProfile){
+        socialProfile.setUser(this);
+        this.socialProfile = socialProfile;
+    }
 }
